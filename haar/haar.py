@@ -3,13 +3,14 @@ from math import log
 
 def haar(args):
 	args = [int(i) for i in args[1:]]
-	if len(args) % 2 != 0:
-		print "Odd # of args", len(args)
+	l = len(args)
+	if l == 0 or l % 2 != 0:
+		print "Even number of args required:", len(args)
 		return
 	
 	ga = average(args) #global average
 
-	steps = int(log(len(args), 2))
+	steps = int(log(l, 2))
 	print "Steps required", steps
 
 	res = process(args)
