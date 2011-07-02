@@ -5,6 +5,7 @@ def haar(args):
 	ga = average(args) #global average
 	print "Global average", ga
 	steps = int(log(len(args), 2))
+	
 	print "Steps required", steps
 
 	r = len(args)
