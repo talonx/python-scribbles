@@ -2,8 +2,17 @@
 import sys
 
 def breathalyze(f):
+	words = {}
 	fw = open("/var/tmp/twl06.txt")
-	words = fw.readlines()
+	curlet = ''
+	curlist = []
+	for w in fw:
+		fl = w[0]
+		if curlet != fl:
+			curlet = fl
+			curlist = words.setdefault(curlet, [])
+		curlist.append(w)
+	
 	print len(words)
 	fw.close()
 	
@@ -66,9 +75,9 @@ def get_min(a, b, c):
 	return min(min(a,b), c)
 
 def main():
-	r = levenshtein('kitten', 'sittin')
-	print "Result", r
-	#breathalyze(sys.argv[1])
+	#r = levenshtein('kitten', 'sittin')
+	#print "Result", r
+	breathalyze(sys.argv[1])
 
 if __name__ == '__main__':
 	main()
