@@ -1,40 +1,64 @@
 #!/usr/bin/env python
 import sys
+import re
 
 def breathalyze(f):
-	words = {}
-	fw = open("/var/tmp/twl06.txt")
-	curlet = ''
-	curlist = []
-	for w in fw:
-		fl = w[0]
-		if curlet != fl:
-			curlet = fl
-			curlist = words.setdefault(curlet, [])
-		curlist.append(w)
-	
-	print len(words)
-	fw.close()
-	
-	#inputwords = []
+	words = load(f)
 	count = 0
-	
 	inp = open(f)
 	for f in inp:
 		t = f.rsplit("\n")[0].split()
 		for tok in t:
 			w = tok.strip().upper()
+			print w
 			changes = diff(words, w)
 			if changes > 0:
 				count += changes
 
-#	print inputwords
-
 	print count
 	inp.close()
 
-def diff(words, w):
-	pass
+def load(f):
+	words = {}
+	fw = open("/var/tmp/twl06.txt")
+	curlet = ''
+	curlist = []
+	for w in fw:
+		w = re.split('\r\n', w)[0]
+		fl = w[0]
+		if curlet != fl:
+			curlet = fl
+			curlist = words.setdefault(curlet, [])
+		curlist.append(w)
+
+	print len(words)
+	print words.keys()
+	fw.close()
+	return words
+
+def diff(words, tomatch):
+	try:
+		list = words[tomatch[0]]
+		#list = ['IAMBICS']
+		#print list
+		if tomatch in list:
+			print "exact match", tomatch
+			return 0
+		
+		score = 0
+		matched = ''
+		for word in list:
+			d = levenshtein(word, tomatch)
+			#print "leven for %s is %d" % (word, d)
+			if score == 0 or d < score:
+				score = d
+				matched = word
+		
+		print "Score for %s is %d match %s" % (tomatch, score, matched)
+		return score
+	except KeyError:
+		"Word does not start with a letter. Skipping", w
+
 
 def levenshtein(w1, w2):
 	'''
@@ -43,25 +67,20 @@ def levenshtein(w1, w2):
 	l1 = len(w1)
 	l2 = len(w2)
 	res = [[0 for i in xrange(l2 + 1)] for j in xrange(l1 + 1)] #init zeroed matrix
-	print res
+	#print res
 
 	for i in xrange(l1 + 1):
 		res[i][0] = i
 	for i in xrange(l2 + 1):
 		res[0][i] = i
-	print_matrix(res)
+	#print_matrix(res)
 
-	for j in xrange(0, l2):
-		for i in xrange(0, l1):
-#			print "i", i
-#			print "j", j
-			if w1[i] == w2[j]:
-				res[i][j] = res[i - 1][j - 1]
-			else:
-				res[i][j] = get_min(res[i - 1][j] + 1, res[i][j - 1] + 1, res[i - 1][j - 1] + 1)
+	for i in xrange(1, l1 + 1):
+		for j in xrange(1, l2 + 1):
+			res[i][j] = get_min(res[i - 1][j] + 1, res[i][j - 1] + 1, res[i - 1][j - 1] + (0 if w1[i - 1] == w2[j - 1] else 1))
 
-	print "Post op"
-	print_matrix(res)
+	#print "Post op"
+	#print_matrix(res)
 	return res[l1 - 1][l2 - 1]
 
 def print_matrix(res):
