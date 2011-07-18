@@ -81,20 +81,24 @@ def levenshtein(w1, w2):
 
 	#print "Post op"
 	#print_matrix(res)
-	return res[l1 - 1][l2 - 1]
+	return res[l1][l2]
 
 def print_matrix(res):
 	for j in xrange(len(res)):
 		print ""
 		for i in xrange(len(res[j])):
 			print res[j][i],
+	print ""
 
 
 def get_min(a, b, c):
 	return min(min(a,b), c)
 
 def main():
-	#r = levenshtein('kitten', 'sittin')
+	#r = levenshtein('goud', 'good')
+	#print r
+	#r = levenshtein('a', 'b')
+	#print r
 	#print "Result", r
 	breathalyze(sys.argv[1])
 
