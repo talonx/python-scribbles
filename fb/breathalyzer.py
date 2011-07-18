@@ -10,13 +10,12 @@ def breathalyze(f):
 		t = f.rsplit("\n")[0].split()
 		for tok in t:
 			w = tok.strip().upper()
-			print w
 			changes = diff(words, w)
 			if changes > 0:
 				count += changes
 
-	print count
 	inp.close()
+	return count
 
 def load(f):
 	words = {}
@@ -31,8 +30,8 @@ def load(f):
 			curlist = words.setdefault(curlet, [])
 		curlist.append(w)
 
-	print len(words)
-	print words.keys()
+	#print len(words)
+	#print words.keys()
 	fw.close()
 	return words
 
@@ -42,7 +41,7 @@ def diff(words, tomatch):
 		#list = ['IAMBICS']
 		#print list
 		if tomatch in list:
-			print "exact match", tomatch
+			#print "exact match", tomatch
 			return 0
 		
 		score = 0
@@ -54,7 +53,7 @@ def diff(words, tomatch):
 				score = d
 				matched = word
 		
-		print "Score for %s is %d match %s" % (tomatch, score, matched)
+		#print "Score for %s is %d match %s" % (tomatch, score, matched)
 		return score
 	except KeyError:
 		"Word does not start with a letter. Skipping", w
@@ -100,7 +99,7 @@ def main():
 	#r = levenshtein('a', 'b')
 	#print r
 	#print "Result", r
-	breathalyze(sys.argv[1])
+	print breathalyze(sys.argv[1])
 
 if __name__ == '__main__':
 	main()
